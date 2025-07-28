@@ -1,14 +1,18 @@
 {
   "name": "@thequirkyfox/statcore",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
+  "main": "./dist/statcore.umd.cjs", 
+  "module": "./dist/statcore.js",     
+  "types": "./dist/statcore.d.ts",    
+  "files": ["dist"],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "vite build",
+    "test": "vitest"
   },
   "devDependencies": {
-    "typescript": "~5.8.3",
-    "vite": "^7.0.4"
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.0.0", 
+    "typescript": "^5.0.0"
   }
 }
