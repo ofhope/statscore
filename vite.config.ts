@@ -23,6 +23,7 @@ export default defineConfig({
       exclude: [
         '**/*.test.ts'
       ],
+      rollupTypes: true
     })
   ],
 });
