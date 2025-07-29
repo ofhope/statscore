@@ -5,8 +5,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
-      name: 'Statcore',
-      fileName: 'statcore',
+      name: 'FactaStats',
+      fileName: 'stats',
     },
     rollupOptions: {
       external: [],

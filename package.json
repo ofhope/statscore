@@ -1,10 +1,10 @@
 {
-  "name": "@thequirkyfox/statcore",
+  "name": "@facta/stats",
   "version": "0.0.1",
   "type": "module",
-  "main": "./dist/statcore.umd.cjs", 
-  "module": "./dist/statcore.js",     
-  "types": "./dist/statcore.d.ts",    
+  "main": "./dist/stats.umd.cjs", 
+  "module": "./dist/stats.js",     
+  "types": "./dist/stats.d.ts",    
   "files": ["dist"],
   "scripts": {
     "build": "vite build",
