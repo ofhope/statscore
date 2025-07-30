@@ -6,9 +6,9 @@ import { rSquared, round } from "./util";
  * Performs simple linear regression to model the relationship between a dependent variable (y) and an independent variable (x).
  * This algorithm fits a straight line through the data points that minimizes the sum of squared residuals between the observed and predicted y values.
  *
+ * @param {Partial<RegressionOptions>} [suppliedOptions] - Optional regression options to override defaults, such as `precision`.
  * @param {DataPoint[]} data - An array of data points, where each `DataPoint` is a tuple `[x, y]`.
  * Expects at least two non-null data points to perform the regression.
- * @param {Partial<RegressionOptions>} [suppliedOptions] - Optional regression options to override defaults, such as `precision`.
  * @returns {RegressionResult} A discriminant union representing the success or failure of the regression.
  * - If successful (`ok: true`), it returns the `points` on the regression line, a `predict` function,
  * the `equation` (gradient and intercept), the `r2` (coefficient of determination), and a `string` representation of the equation.
@@ -17,7 +17,7 @@ import { rSquared, round } from "./util";
  * @example
  * // Basic usage
  * const data = [[1, 2], [2, 3], [3, 4], [4, 5]];
- * const result = linear(data);
+ * const result = linear({}, data);
  * if (result.ok) {
  * console.log(`Regression Equation: ${result.string}`); // "y = 1x + 1"
  * console.log(`R-squared: ${result.r2}`); // ~1
@@ -27,15 +27,20 @@ import { rSquared, round } from "./util";
  * }
  *
  * @example
+ * // Using custom precision
+ * const data = [[1, 2], [2, 3], [3, 4], [4, 5]];
+ * const result = linear({ precision: 4 }, data);
+ *
+ * @example
  * // Handling insufficient data
  * const data = [[1, 2]];
- * const result = linear(data);
+ * const result = linear({}, data);
  * // result.ok will be false, result.errorType will be "InsufficientData"
  *
  * @example
  * // Handling vertical line (degenerate input)
  * const data = [[1, 2], [1, 3], [1, 4]];
- * const result = linear(data);
+ * const result = linear({}, data);
  * // result.ok will be false, result.errorType will be "DegenerateInput"
  *
  * @description
@@ -45,7 +50,7 @@ import { rSquared, round } from "./util";
  * - **Prediction:** Allows for prediction of the dependent variable's value for a given independent variable's value.
  * - **Goodness of Fit:** The R-squared (`r2`) value indicates how well the regression line fits the observed data, ranging from 0 (no fit) to 1 (perfect fit). [cite_start]A high R-squared suggests the model explains a large proportion of the variance in the dependent variable. [cite: 48]
  */
-export function linear(data: DataPoint[], suppliedOptions?: Partial<RegressionOptions>): RegressionResult {
+export function linear(suppliedOptions: Partial<RegressionOptions>, data: DataPoint[]): RegressionResult {
   const options: RegressionOptions = {
     ...DEFAULT_OPTIONS,
     ...suppliedOptions,
