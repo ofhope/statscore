@@ -1,3 +1,4 @@
+import { curry } from "../fp";
 import { DEFAULT_OPTIONS } from "./const";
 import type { DataPoint, PredictedPoint, RegressionOptions, RegressionResult } from "./types";
 import { rSquared, round } from "./util";
@@ -50,7 +51,7 @@ import { rSquared, round } from "./util";
  * - **Prediction:** Allows for prediction of the dependent variable's value for a given independent variable's value.
  * - **Goodness of Fit:** The R-squared (`r2`) value indicates how well the regression line fits the observed data, ranging from 0 (no fit) to 1 (perfect fit). [cite_start]A high R-squared suggests the model explains a large proportion of the variance in the dependent variable. [cite: 48]
  */
-export function linear(suppliedOptions: Partial<RegressionOptions>, data: DataPoint[]): RegressionResult {
+function _linear(suppliedOptions: Partial<RegressionOptions>, data: DataPoint[]): RegressionResult {
   const options: RegressionOptions = {
     ...DEFAULT_OPTIONS,
     ...suppliedOptions,
@@ -109,3 +110,5 @@ export function linear(suppliedOptions: Partial<RegressionOptions>, data: DataPo
     string: intercept === 0 ? `y = ${gradient}x` : `y = ${gradient}x + ${intercept}`,
   };
 }
+
+export const linear = curry(_linear);

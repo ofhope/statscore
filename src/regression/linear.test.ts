@@ -10,7 +10,7 @@ describe("linear", () => {
       [3, 4],
       [4, 5],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -36,7 +36,7 @@ describe("linear", () => {
       [3, 3],
       [4, 2],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -56,7 +56,7 @@ describe("linear", () => {
       [3, 5],
       [4, 5],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -77,7 +77,7 @@ describe("linear", () => {
       [4, 4.2],
       [5, 5.1],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -98,7 +98,7 @@ describe("linear", () => {
       [1, 2],
       [2, 4],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -115,7 +115,7 @@ describe("linear", () => {
       [0, 0],
       [5, -10],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -133,7 +133,7 @@ describe("linear", () => {
       [2, 2.12345],
       [3, 3.12345],
     ];
-    const result = linear(data, { precision: 2 });
+    const result = linear({ precision: 2 }, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -147,7 +147,7 @@ describe("linear", () => {
 
   it("should return an error for insufficient data points (less than 2)", () => {
     const data1: DataPoint[] = [];
-    const result1 = linear(data1);
+    const result1 = linear({}, data1);
     expect(result1.ok).toBe(false);
     if (result1.ok) {
       throw new Error("Expected result1 to be unsuccessful");
@@ -156,7 +156,7 @@ describe("linear", () => {
     expect(result1.message).toContain("at least 2 valid data points");
 
     const data2: DataPoint[] = [[1, 1]];
-    const result2 = linear(data2);
+    const result2 = linear({}, data2);
     if (result2.ok) {
       throw new Error("Expected result2 to be unsuccessful");
     }
@@ -170,7 +170,7 @@ describe("linear", () => {
       [1, 3],
       [1, 4],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (result.ok) {
       throw new Error("Expected result to be unsuccessful");
@@ -187,7 +187,7 @@ describe("linear", () => {
       [4, null],
       [5, 6],
     ];
-    const result = linear(data); // Expects [1,2], [3,4], [5,6] to be used
+    const result = linear({}, data); // Expects [1,2], [3,4], [5,6] to be used
 
     console.log("Null filter test - Input data:", data);
     console.log("Null filter test - Result:", result);
@@ -211,7 +211,7 @@ describe("linear", () => {
       largeData.push([i, i * 2 + 3 + Math.random() * 0.1]); // Add some noise
     }
 
-    const result = linear(largeData);
+    const result = linear({}, largeData);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -229,7 +229,7 @@ describe("linear", () => {
       [1, 10],
       [2, 20],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -247,7 +247,7 @@ describe("linear", () => {
       [0.0002, 0.0004],
       [0.0003, 0.0006],
     ];
-    const result = linear(data, { precision: 4 }); // Use higher precision for very small numbers
+    const result = linear({ precision: 4 }, data); // Use higher precision for very small numbers
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -264,7 +264,7 @@ describe("linear", () => {
       [2e9, 4e9],
       [3e9, 6e9],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -281,7 +281,7 @@ describe("linear", () => {
       [2, null],
       [3, null],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (result.ok) {
       throw new Error("Expected result1 to be unsuccessful");
@@ -294,7 +294,7 @@ describe("linear", () => {
       [1, 2],
       [2, 3],
     ];
-    const result = linear(data, { precision: 0 }); // Set precision to 0 to test rounding impact
+    const result = linear({ precision: 0 }, data); // Set precision to 0 to test rounding impact
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
@@ -320,7 +320,7 @@ describe("linear", () => {
       [2, 5],
       [3, 5],
     ];
-    const result = linear(data);
+    const result = linear({}, data);
 
     if (!result.ok) {
       throw new Error("Expected successful regression result");
