@@ -6,7 +6,7 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       name: 'FactaStats',
-      fileName: 'index',
+      fileName: 'stats',
       formats: ['es']
     },
     rollupOptions: {
@@ -20,7 +20,8 @@ export default defineConfig({
       insertTypesEntry: true,
       exclude: [
         '**/*.test.ts'
-      ]
+      ],
+      rollupTypes: true
     })
   ],
 });

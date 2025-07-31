@@ -2,12 +2,12 @@
   "name": "@facta/fp",
   "version": "0.0.1",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/fp.js",
+  "types": "./dist/fp.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/fp.js",
+      "types": "./dist/fp.d.ts"
     }
   },
   "files": [

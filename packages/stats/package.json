@@ -2,12 +2,12 @@
     "name": "@facta/stats",
     "version": "0.0.1",
     "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./dist/stats.js",
+    "types": "./dist/stats.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "import": "./dist/stats.js",
+            "types": "./dist/stats.d.ts"
         }
     },
     "files": [
