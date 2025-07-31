@@ -1,5 +1,10 @@
 {
+  "include": [
+    "packages/*/src/**/*.ts",
+    "packages/*/src/**/*.tsx"
+  ],
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -11,6 +16,7 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "isolatedModules": true,
 
     /* Linting */
     "strict": true,
@@ -19,7 +25,11 @@
     "noFallthroughCasesInSwitch": true,
 
     "declaration": true,
-    "declarationMap": false
-  },
-  "include": ["src"]
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "sourceMap": true,
+    "paths": {
+      "@facta/*": ["packages/*/src"]
+    }
+  }
 }
