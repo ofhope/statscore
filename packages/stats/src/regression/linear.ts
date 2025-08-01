@@ -1,15 +1,30 @@
 import { curry } from "@facta/fp";
 import { DEFAULT_OPTIONS } from "./const";
-import type { DataPoint, PredictedPoint, RegressionOptions, RegressionResult } from "./types";
+import type {
+  DataPoint,
+  PredictedPoint,
+  RegressionOptions,
+  RegressionResult,
+} from "./types";
 import { rSquared, round } from "./util";
 
-function _linear(suppliedOptions: Partial<RegressionOptions>, data: DataPoint[]): RegressionResult {
+function _linear(
+  suppliedOptions: Partial<RegressionOptions>,
+  data: DataPoint[]
+): RegressionResult {
   const options: RegressionOptions = {
     ...DEFAULT_OPTIONS,
     ...suppliedOptions,
   };
 
-  const filteredData = data.filter(d => d[1] !== null) as [number, number][];
+  const filteredData = data.filter(
+    (d) =>
+      d[1] !== null &&
+      !isNaN(d[0]) &&
+      !isNaN(d[1]) &&
+      isFinite(d[0]) &&
+      isFinite(d[1])
+  );
 
   if (filteredData.length < 2) {
     return {
@@ -30,8 +45,8 @@ function _linear(suppliedOptions: Partial<RegressionOptions>, data: DataPoint[])
     sum[4] += filteredData[n][1] * filteredData[n][1]; // sum y^2
   }
 
-  const run = ((len * sum[2]) - (sum[0] * sum[0]));
-  const rise = ((len * sum[3]) - (sum[0] * sum[1]));
+  const run = len * sum[2] - sum[0] * sum[0];
+  const rise = len * sum[3] - sum[0] * sum[1];
 
   if (run === 0) {
     // This implies all x values are the same, leading to a vertical line, which linear regression cannot model.
@@ -39,27 +54,57 @@ function _linear(suppliedOptions: Partial<RegressionOptions>, data: DataPoint[])
     return {
       ok: false,
       errorType: "DegenerateInput",
-      message: "Cannot perform linear regression: all x-values are identical, resulting in a vertical line.",
+      message:
+        "Cannot perform linear regression: all x-values are identical, resulting in a vertical line.",
     };
   }
 
   const gradient = round(rise / run, options.precision);
-  const intercept = round((sum[1] / len) - ((gradient * sum[0]) / len), options.precision);
+  const intercept = round(
+    sum[1] / len - (gradient * sum[0]) / len,
+    options.precision
+  );
 
-  const predict = (x: number): PredictedPoint => ([
+  if (
+    isNaN(gradient) ||
+    !isFinite(gradient) ||
+    isNaN(intercept) ||
+    !isFinite(intercept)
+  ) {
+    return {
+      ok: false,
+      errorType: "MathError",
+      message:
+        "Linear regression resulted in non-finite coefficients (NaN or Infinity). This can occur with problematic input data, such as extremely large values or an unhandled mathematical edge case.",
+    };
+  }
+
+  const predict = (x: number): PredictedPoint => [
     round(x, options.precision),
-    round((gradient * x) + intercept, options.precision)
-  ]);
+    round(gradient * x + intercept, options.precision),
+  ];
 
-  const points = data.map(point => predict(point[0])); // Use original data length for points array
+  const points = data.map((point) => predict(point[0]));
+
+  const r2 = rSquared(data, points);
+
+  if (isNaN(r2)) {
+    return {
+      ok: false,
+      errorType: "MathError",
+      message:
+        "R-squared calculation failed or resulted in NaN. This can occur if the dependent variable (y) has no variance (all y-values are identical) or due to other mathematical issues.",
+    };
+  }
 
   return {
     ok: true,
     points,
     predict,
-    equation: [gradient, intercept],
-    r2: round(rSquared(data, points), options.precision),
-    string: intercept === 0 ? `y = ${gradient}x` : `y = ${gradient}x + ${intercept}`,
+    m: gradient,
+    b: intercept,
+    rSquared: round(r2, options.precision),
+    method: "linear",
   };
 }
 
