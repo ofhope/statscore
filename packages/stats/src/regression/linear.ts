@@ -6,7 +6,7 @@ import type {
   RegressionOptions,
   RegressionResult,
 } from "./types";
-import { rSquared, round } from "./util";
+import { rSquared, round, isValid } from "./util";
 
 function _linear(
   suppliedOptions: Partial<RegressionOptions>,
@@ -17,32 +17,32 @@ function _linear(
     ...suppliedOptions,
   };
 
-  const filteredData = data.filter(
-    (d) =>
-      d[1] !== null &&
-      !isNaN(d[0]) &&
-      !isNaN(d[1]) &&
-      isFinite(d[0]) &&
-      isFinite(d[1])
-  );
-
-  if (filteredData.length < 2) {
+  if (data.length < 2) {
     return {
       ok: false,
       errorType: "InsufficientData",
-      message: `Linear regression requires at least 2 valid data points (x, y). Received ${filteredData.length}.`,
+      message: `Linear regression requires at least 2 valid data points (x, y). Received ${data.length}.`,
     };
   }
 
   const sum = [0, 0, 0, 0, 0]; // sx, sy, sx2, sxy, sy2
-  const len = filteredData.length;
+  const len = data.length;
 
   for (let n = 0; n < len; n++) {
-    sum[0] += filteredData[n][0]; // sum x
-    sum[1] += filteredData[n][1]; // sum y
-    sum[2] += filteredData[n][0] * filteredData[n][0]; // sum x^2
-    sum[3] += filteredData[n][0] * filteredData[n][1]; // sum xy
-    sum[4] += filteredData[n][1] * filteredData[n][1]; // sum y^2
+    const x = data[n][0];
+    const y = data[n][1];
+  if (!isValid(x) || !isValid(y)) {
+      return {
+        ok: false,
+        errorType: "InvalidInput",
+        message: `Data point at index ${n} contains non-finite values (${x}, ${y}). Linear regression requires finite numerical inputs.`,
+      };
+    }
+    sum[0] += data[n][0]; // sum x
+    sum[1] += data[n][1]; // sum y
+    sum[2] += data[n][0] * data[n][0]; // sum x^2
+    sum[3] += data[n][0] * data[n][1]; // sum xy
+    sum[4] += data[n][1] * data[n][1]; // sum y^2
   }
 
   const run = len * sum[2] - sum[0] * sum[0];

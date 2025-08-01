@@ -62,3 +62,7 @@ export function rSquared(data: DataPoint[], results: PredictedPoint[]): number {
 
   return 1 - (sse / ssyy);
 }
+
+export function isValid(value: number): boolean {
+  return value !== null && !isNaN(value) && isFinite(value);
+}
