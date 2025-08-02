@@ -25,28 +25,33 @@ function _linear(
     };
   }
 
-  const sum = [0, 0, 0, 0, 0]; // sx, sy, sx2, sxy, sy2
+  let sumX = 0;
+  let sumY = 0;
+  let sumX2 = 0;
+  let sumXY = 0;
+  let sumY2 = 0;
+
   const len = data.length;
 
   for (let n = 0; n < len; n++) {
     const x = data[n][0];
     const y = data[n][1];
-  if (!isValid(x) || !isValid(y)) {
+    if (!isValid(x) || !isValid(y)) {
       return {
         ok: false,
         errorType: "InvalidInput",
         message: `Data point at index ${n} contains non-finite values (${x}, ${y}). Linear regression requires finite numerical inputs.`,
       };
     }
-    sum[0] += data[n][0]; // sum x
-    sum[1] += data[n][1]; // sum y
-    sum[2] += data[n][0] * data[n][0]; // sum x^2
-    sum[3] += data[n][0] * data[n][1]; // sum xy
-    sum[4] += data[n][1] * data[n][1]; // sum y^2
+    sumX += x;
+    sumY += y;
+    sumX2 += x * x;
+    sumXY += x * y;
+    sumY2 += y * y;
   }
 
-  const run = len * sum[2] - sum[0] * sum[0];
-  const rise = len * sum[3] - sum[0] * sum[1];
+  const run = len * sumX2 - sumX * sumX;
+  const rise = len * sumXY - sumX * sumY;
 
   if (run === 0) {
     // This implies all x values are the same, leading to a vertical line, which linear regression cannot model.
@@ -61,7 +66,7 @@ function _linear(
 
   const gradient = round(rise / run, options.precision);
   const intercept = round(
-    sum[1] / len - (gradient * sum[0]) / len,
+    sumY / len - (gradient * sumX) / len,
     options.precision
   );
 
