@@ -1,0 +1,32 @@
+{
+    "name": "@facta/forge",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./dist/forge.js",
+    "types": "./dist/forge.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/forge.js",
+            "types": "./dist/forge.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build",
+        "test": "vitest",
+        "dev": "vite build --watch",
+        "clean": "rimraf dist"
+    },
+    "dependencies": {
+        "@facta/fp": "*"
+    },
+    "devDependencies": {
+        "vite": "^5.0.0",
+        "vite-plugin-dts": "^3.0.0",
+        "vitest": "^3.2.4",
+        "typescript": "^5.0.0",
+        "rimraf": "^5.0.0"
+    }
+}
