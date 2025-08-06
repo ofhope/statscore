@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { pipe } from './pipe';
 
-describe('pipe utility function', () => {
+describe('pipe', () => {
   // Helper functions for testing
   const add1 = (x: number) => x + 1;
   const multiply2 = (x: number) => x * 2;
