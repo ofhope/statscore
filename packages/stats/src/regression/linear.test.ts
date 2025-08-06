@@ -204,7 +204,6 @@ describe("linear", () => {
     if (!result.ok) {
       throw new Error("Expected successful regression result");
     }
-    console.log("Large data regression result:", result);
 
     expect(result.m).toBeCloseTo(2); // Gradient should be close to 2
     expect(result.b).toBeCloseTo(3, 1); // Intercept should be close to 3 (with tolerance of 0.05)
