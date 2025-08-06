@@ -8,10 +8,59 @@ import type {
 } from "./types";
 import { rSquared, round, isValid } from "./util";
 
-function _linear(
+/**
+ * Performs simple linear regression to model the relationship between a dependent variable (y) and an independent variable (x).
+ * This algorithm fits a straight line through the data points that minimizes the sum of squared residuals between the observed and predicted y values.
+ *
+ * @param {Partial<RegressionOptions>} [suppliedOptions] - Optional regression options to override defaults, such as `precision`.
+ * @param {DataPoint[]} data - An array of data points, where each `DataPoint` is a tuple `[x, y]`.
+ * Expects at least two non-null data points to perform the regression.
+ * @returns {RegressionResult} A discriminant union representing the success or failure of the regression.
+ * - If successful (`ok: true`), it returns the `points` on the regression line, a `predict` function,
+ * the `equation` (gradient and intercept), the `r2` (coefficient of determination), and a `string` representation of the equation.
+ * - If unsuccessful (`ok: false`), it provides an `errorType` (e.g., "InsufficientData", "DegenerateInput") and a `message`.
+ *
+ * @example
+ * // Basic usage
+ * const data = [[1, 2], [2, 3], [3, 4], [4, 5]];
+ * const result = linear({}, data);
+ * if (result.ok) {
+ * console.log(`Regression Equation: ${result.string}`); // "y = 1x + 1"
+ * console.log(`R-squared: ${result.r2}`); // ~1
+ * console.log(`Predicted Y for X=5: ${result.predict(5)[1]}`); // 6
+ * } else {
+ * console.error(`Error: ${result.message}`);
+ * }
+ *
+ * @example
+ * // Using custom precision
+ * const data = [[1, 2], [2, 3], [3, 4], [4, 5]];
+ * const result = linear({ precision: 4 }, data);
+ *
+ * @example
+ * // Handling insufficient data
+ * const data = [[1, 2]];
+ * const result = linear({}, data);
+ * // result.ok will be false, result.errorType will be "InsufficientData"
+ *
+ * @example
+ * // Handling vertical line (degenerate input)
+ * const data = [[1, 2], [1, 3], [1, 4]];
+ * const result = linear({}, data);
+ * // result.ok will be false, result.errorType will be "DegenerateInput"
+ *
+ * @description
+ * **Insights derived from Linear Regression:**
+ * - **Trend Identification:** Reveals the linear trend between two variables. A positive gradient indicates a positive correlation, a negative gradient indicates a negative correlation.
+ * - **Magnitude of Relationship:** The gradient (`m`) quantifies how much the dependent variable (y) changes for every unit increase in the independent variable (x).
+ * - **Prediction:** Allows for prediction of the dependent variable's value for a given independent variable's value.
+ * - **Goodness of Fit:** The R-squared (`r2`) value indicates how well the regression line fits the observed data, ranging from 0 (no fit) to 1 (perfect fit). [cite_start]A high R-squared suggests the model explains a large proportion of the variance in the dependent variable. [cite: 48]
+ */
+
+export const linear = curry((
   suppliedOptions: Partial<RegressionOptions>,
   data: DataPoint[]
-): RegressionResult {
+): RegressionResult => {
   const options: RegressionOptions = {
     ...DEFAULT_OPTIONS,
     ...suppliedOptions,
@@ -111,54 +160,4 @@ function _linear(
     rSquared: round(r2, options.precision),
     method: "linear",
   };
-}
-
-/**
- * Performs simple linear regression to model the relationship between a dependent variable (y) and an independent variable (x).
- * This algorithm fits a straight line through the data points that minimizes the sum of squared residuals between the observed and predicted y values.
- *
- * @param {Partial<RegressionOptions>} [suppliedOptions] - Optional regression options to override defaults, such as `precision`.
- * @param {DataPoint[]} data - An array of data points, where each `DataPoint` is a tuple `[x, y]`.
- * Expects at least two non-null data points to perform the regression.
- * @returns {RegressionResult} A discriminant union representing the success or failure of the regression.
- * - If successful (`ok: true`), it returns the `points` on the regression line, a `predict` function,
- * the `equation` (gradient and intercept), the `r2` (coefficient of determination), and a `string` representation of the equation.
- * - If unsuccessful (`ok: false`), it provides an `errorType` (e.g., "InsufficientData", "DegenerateInput") and a `message`.
- *
- * @example
- * // Basic usage
- * const data = [[1, 2], [2, 3], [3, 4], [4, 5]];
- * const result = linear({}, data);
- * if (result.ok) {
- * console.log(`Regression Equation: ${result.string}`); // "y = 1x + 1"
- * console.log(`R-squared: ${result.r2}`); // ~1
- * console.log(`Predicted Y for X=5: ${result.predict(5)[1]}`); // 6
- * } else {
- * console.error(`Error: ${result.message}`);
- * }
- *
- * @example
- * // Using custom precision
- * const data = [[1, 2], [2, 3], [3, 4], [4, 5]];
- * const result = linear({ precision: 4 }, data);
- *
- * @example
- * // Handling insufficient data
- * const data = [[1, 2]];
- * const result = linear({}, data);
- * // result.ok will be false, result.errorType will be "InsufficientData"
- *
- * @example
- * // Handling vertical line (degenerate input)
- * const data = [[1, 2], [1, 3], [1, 4]];
- * const result = linear({}, data);
- * // result.ok will be false, result.errorType will be "DegenerateInput"
- *
- * @description
- * **Insights derived from Linear Regression:**
- * - **Trend Identification:** Reveals the linear trend between two variables. A positive gradient indicates a positive correlation, a negative gradient indicates a negative correlation.
- * - **Magnitude of Relationship:** The gradient (`m`) quantifies how much the dependent variable (y) changes for every unit increase in the independent variable (x).
- * - **Prediction:** Allows for prediction of the dependent variable's value for a given independent variable's value.
- * - **Goodness of Fit:** The R-squared (`r2`) value indicates how well the regression line fits the observed data, ranging from 0 (no fit) to 1 (perfect fit). [cite_start]A high R-squared suggests the model explains a large proportion of the variance in the dependent variable. [cite: 48]
- */
-export const linear = curry(_linear);
+})
